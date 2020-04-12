@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/4/10 9:54:20                            */
+/* Created on:     2020/4/12 8:11:17                            */
 /*==============================================================*/
 
 
@@ -12,11 +12,11 @@ drop table if exists orderItem;
 
 drop table if exists orders;
 
-drop index Relationship_15_FK on shoppingItem;
+drop index Relationship_2_FK on shoppingItem;
 
 drop table if exists shoppingItem;
 
-drop index Relationship_15_FK on user;
+drop index Relationship_2_FK on user;
 
 drop table if exists user;
 
@@ -95,9 +95,9 @@ create table shoppingItem
 alter table shoppingItem comment 'shoppingItem';
 
 /*==============================================================*/
-/* Index: Relationship_15_FK                                    */
+/* Index: Relationship_2_FK                                     */
 /*==============================================================*/
-create index Relationship_15_FK on shoppingItem
+create index Relationship_2_FK on shoppingItem
 (
    
 );
@@ -118,28 +118,28 @@ create table user
 alter table user comment 'user';
 
 /*==============================================================*/
-/* Index: Relationship_15_FK                                    */
+/* Index: Relationship_2_FK                                     */
 /*==============================================================*/
-create index Relationship_15_FK on user
+create index Relationship_2_FK on user
 (
    
 );
 
-alter table CommImage add constraint FK_Relationship_16 foreign key (cid)
+alter table CommImage add constraint FK_Relationship_4 foreign key (cid)
       references commodity (cid) on delete restrict on update restrict;
 
-alter table orderItem add constraint FK_Relationship_14 foreign key (oid)
+alter table orderItem add constraint FK_Relationship_5 foreign key (cid)
+      references commodity (cid) on delete restrict on update restrict;
+
+alter table orderItem add constraint FK_Relationship_6 foreign key (oid)
       references orders (oid) on delete restrict on update restrict;
 
-alter table orderItem add constraint FK_Relationship_9 foreign key (cid)
-      references commodity (cid) on delete restrict on update restrict;
-
-alter table orders add constraint FK_Relationship_13 foreign key (uid)
+alter table orders add constraint FK_Relationship_1 foreign key (uid)
       references user (uid) on delete restrict on update restrict;
 
-alter table shoppingItem add constraint FK_Relationship_15 foreign key (uid)
+alter table shoppingItem add constraint FK_Relationship_2 foreign key (uid)
       references user (uid) on delete restrict on update restrict;
 
-alter table shoppingItem add constraint FK_Relationship_17 foreign key (cid)
+alter table shoppingItem add constraint FK_Relationship_3 foreign key (cid)
       references commodity (cid) on delete restrict on update restrict;
 
