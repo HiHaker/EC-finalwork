@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/4/14 星期二 下午 16:46:02                    */
+/* Created on:     2020/4/28 星期二 下午 21:53:01                    */
 /*==============================================================*/
 
 
@@ -11,6 +11,8 @@ drop table if exists commodity;
 drop table if exists orderItem;
 
 drop table if exists orders;
+
+drop table if exists shippingAddress;
 
 drop index Relationship_2_FK on shoppingItem;
 
@@ -25,7 +27,7 @@ drop table if exists user;
 /*==============================================================*/
 create table CommImage
 (
-   id                   varchar(50) not null,
+   id                   int not null,
    cid                  varchar(50) not null,
    primary key (id)
 );
@@ -56,7 +58,7 @@ create table orderItem
    id                   int not null auto_increment,
    cid                  varchar(50) not null,
    oid                  varchar(50) not null,
-   number               varchar(50) not null,
+   number               int not null,
    itemPrice            float(8,2) not null,
    primary key (id)
 );
@@ -72,8 +74,6 @@ create table orders
    uid                  varchar(50) not null,
    totalPrice           float(8,2) not null,
    status               integer not null,
-   telephone            varchar(50) not null,
-   address              varchar(50) not null,
    orderTime            varchar(50) not null,
    deliveryTime         varchar(50) not null,
    discount             float(8,2) not null,
@@ -81,6 +81,21 @@ create table orders
 );
 
 alter table orders comment 'orders';
+
+/*==============================================================*/
+/* Table: shippingAddress                                       */
+/*==============================================================*/
+create table shippingAddress
+(
+   sid                  varchar(50) not null,
+   uid                  varchar(50) not null,
+   name                 varchar(50) not null,
+   telephone            varchar(50) not null,
+   address              varchar(50) not null,
+   primary key (sid)
+);
+
+alter table shippingAddress comment 'shippingAddress';
 
 /*==============================================================*/
 /* Table: shoppingItem                                          */
@@ -112,10 +127,7 @@ create index Relationship_2_FK on shoppingItem
 create table user
 (
    uid                  varchar(50) not null,
-   name                 varchar(50) not null,
    registrationDate     varchar(50) not null,
-   address              varchar(50) not null,
-   telephone            varchar(50) not null,
    primary key (uid)
 );
 
@@ -139,6 +151,9 @@ alter table orderItem add constraint FK_Relationship_6 foreign key (oid)
       references orders (oid) on delete restrict on update restrict;
 
 alter table orders add constraint FK_Relationship_1 foreign key (uid)
+      references user (uid) on delete restrict on update restrict;
+
+alter table shippingAddress add constraint FK_Reference_7 foreign key (uid)
       references user (uid) on delete restrict on update restrict;
 
 alter table shoppingItem add constraint FK_Relationship_2 foreign key (uid)
