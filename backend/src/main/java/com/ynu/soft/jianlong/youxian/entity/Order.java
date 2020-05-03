@@ -22,12 +22,6 @@ public class Order {
     // 订单状态
     @Column(name = "status")
     private int status;
-    // 提货人电话
-    @Column(name = "telephone")
-    private String telephone;
-    // 提货地点
-    @Column(name = "address")
-    private String address;
     // 下单时间
     @Column(name = "orderTime")
     private String orderTime;
@@ -42,14 +36,11 @@ public class Order {
     }
 
     public Order(String oid, String uid, float totalPrice, int status,
-                 String telephone, String address, String orderTime,
-                 String deliveryTime, float discount) {
+                 String orderTime, String deliveryTime, float discount) {
         this.oid = oid;
         this.uid = uid;
         this.totalPrice = totalPrice;
         this.status = status;
-        this.telephone = telephone;
-        this.address = address;
         this.orderTime = orderTime;
         this.deliveryTime = deliveryTime;
         this.discount = discount;
@@ -87,22 +78,6 @@ public class Order {
         this.status = status;
     }
 
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getOrderTime() {
         return orderTime;
     }
@@ -134,8 +109,6 @@ public class Order {
                 ", uid='" + uid + '\'' +
                 ", totalPrice=" + totalPrice +
                 ", status=" + status +
-                ", telephone='" + telephone + '\'' +
-                ", address='" + address + '\'' +
                 ", orderTime='" + orderTime + '\'' +
                 ", deliveryTime='" + deliveryTime + '\'' +
                 ", discount=" + discount +

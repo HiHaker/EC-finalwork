@@ -14,28 +14,16 @@ import javax.persistence.Table;
 public class User {
     @Id
     private String uid;
-    // 提货人的姓名
-    @Column(name = "name")
-    private String name;
     // 用户的注册日期
     @Column(name = "registrationDate")
     private String registrationDate;
-    // 提货人的地址
-    @Column(name = "address")
-    private String address;
-    // 提货人的电话
-    @Column(name = "telephone")
-    private String telephone;
 
     public User() {
     }
 
-    public User(String uid, String name, String registrationDate, String address, String telephone) {
+    public User(String uid, String registrationDate) {
         this.uid = uid;
-        this.name = name;
         this.registrationDate = registrationDate;
-        this.address = address;
-        this.telephone = telephone;
     }
 
     public String getUid() {
@@ -46,14 +34,6 @@ public class User {
         this.uid = uid;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getRegistrationDate() {
         return registrationDate;
     }
@@ -62,30 +42,11 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
                 ", registrationDate='" + registrationDate + '\'' +
-                ", address='" + address + '\'' +
-                ", telephone='" + telephone + '\'' +
                 '}';
     }
 }
