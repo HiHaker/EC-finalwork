@@ -7,7 +7,6 @@ import com.ynu.soft.jianlong.youxian.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @Date 2020-05-19 上午 11:02
  */
 @CrossOrigin
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
@@ -36,20 +35,23 @@ public class UserController {
      * @return 状态信息
      */
     @ApiOperation(value = "用户注册", notes = "用户注册")
-    @ApiImplicitParam(name = "User", value = "用户注册参数", required = true, dataType = "User")
+    @ApiImplicitParam(name = "user", value = "用户注册参数", required = true, dataType = "User")
     @PostMapping("/register")
-    public JSONObject register(User user){
+    public JSONObject register(@RequestBody User user){
 
         jsonObject = new JSONObject();
 
         try{
             userService.register(user);
             jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
         }
         catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            String message = e.getMessage();
+            System.out.println(message);
             e.printStackTrace();
             jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
         }
 
         return jsonObject;
@@ -75,11 +77,14 @@ public class UserController {
         try{
             addressService.addAddress(uid, name, telephone, address);
             jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
         }
         catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            String message = e.getMessage();
+            System.out.println(message);
             e.printStackTrace();
             jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
         }
 
         return jsonObject;
@@ -98,11 +103,14 @@ public class UserController {
         try{
             addressService.deleteAddress(sid);
             jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
         }
         catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            String message = e.getMessage();
+            System.out.println(message);
             e.printStackTrace();
             jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
         }
 
         return jsonObject;
@@ -128,11 +136,14 @@ public class UserController {
         try{
             addressService.updateAddress(sid, name, telephone, address);
             jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
         }
         catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            String message = e.getMessage();
+            System.out.println(message);
             e.printStackTrace();
             jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
         }
 
         return jsonObject;
@@ -151,12 +162,15 @@ public class UserController {
         try{
             jsonObject.put("content", addressService.getAddresses(uid));
             jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
         }
         catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            String message = e.getMessage();
+            System.out.println(message);
             e.printStackTrace();
             jsonObject.put("isSuccess", false);
             jsonObject.put("content", null);
+            jsonObject.put("message", message);
         }
 
         return jsonObject;
@@ -175,11 +189,14 @@ public class UserController {
         try{
             addressService.setDefaultAddress(sid);
             jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
         }
         catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            String message = e.getMessage();
+            System.out.println(message);
             e.printStackTrace();
             jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
         }
 
         return jsonObject;

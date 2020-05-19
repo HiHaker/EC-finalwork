@@ -31,11 +31,11 @@ public class AddressService {
      * @return 地址对象
      */
     private ShippingAddress checkSid(int sid){
-        ShippingAddress deleteAddress = shippingAddressRepository.findById(sid).orElse(null);
+        ShippingAddress deleteAddress = shippingAddressRepository.findBySidAndIsDelete(sid, false);
 
         // 检查sid的合法性
         if (deleteAddress == null){
-            throw new IllegalArgumentException("ERROR:sid不存在!");
+            throw new IllegalArgumentException("ERROR:sid错误,地址不存在!");
         }
         else{
             return deleteAddress;
@@ -85,7 +85,7 @@ public class AddressService {
 
         // 如果是此用户的唯一一个地址，就设置为默认地址
         // 找到未删除的用户的地址
-        if (shippingAddressRepository.findByUidAndDelete(uid, false).size() == 0){
+        if (shippingAddressRepository.findByUidAndIsDelete(uid, false).size() == 0){
             newAddress.setDefault(true);
         }
         else{
@@ -110,7 +110,7 @@ public class AddressService {
         shippingAddressRepository.save(deleteAddress);
 
         // 如果删除地址后仅剩下一个地址，就要将其设置为默认地址
-        List<ShippingAddress> addresses = shippingAddressRepository.findByUidAndDelete(uid, false);
+        List<ShippingAddress> addresses = shippingAddressRepository.findByUidAndIsDelete(uid, false);
         if (addresses.size() == 1){
             ShippingAddress address = addresses.get(0);
             address.setDefault(true);
@@ -146,7 +146,7 @@ public class AddressService {
      * @return 用户的地址列表
      */
     public List<ShippingAddress> getAddresses(String uid){
-        return shippingAddressRepository.findByUidAndDelete(uid, false);
+        return shippingAddressRepository.findByUidAndIsDelete(uid, false);
     }
 
     /**
@@ -161,7 +161,7 @@ public class AddressService {
         String uid = newAddress.getUid();
 
         // 将原来的默认地址设置为false
-        ShippingAddress defaultAddress = shippingAddressRepository.findByUidAndDefault(uid, true);
+        ShippingAddress defaultAddress = shippingAddressRepository.findByUidAndIsDefault(uid, true);
         defaultAddress.setDefault(false);
         shippingAddressRepository.save(defaultAddress);
 

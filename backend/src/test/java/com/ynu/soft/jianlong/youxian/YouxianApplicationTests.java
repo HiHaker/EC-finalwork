@@ -18,6 +18,7 @@ class YouxianApplicationTests {
     @Test
     void testTimeFormatCheck(){
         String testTime = "2017-12-04 14:15:16";
+        String testTime2 = "2020-5-19 14:38:34";
         System.out.println(commonService.timeFormatIsCorrect(testTime));
     }
 

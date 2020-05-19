@@ -36,16 +36,42 @@ public class CommodityService {
     CommonService commonService;
 
     /**
-     * 检查参数的合法性
-     * @param cid
+     * 检查cid参数的合法性
+     * @param cid 商品id
      */
-    private Commodity checkArg(String cid){
-        Commodity commodity = commodityRepository.findById(cid).orElse(null);
+    private Commodity checkCid(String cid){
+        Commodity commodity = commodityRepository.findByCidAndIsDelete(cid, false);
         if (commodity == null){
-            throw new IllegalArgumentException("商品id不存在!");
+            throw new IllegalArgumentException("ERROR:商品id不存在!");
         }
         else{
             return commodity;
+        }
+    }
+
+    /**
+     * 检查参数合法性
+     * @param cname 商品名
+     * @param price 商品价格
+     * @param repertory 商品库存
+     * @param description 商品描述
+     * @param type 商品类型
+     */
+    private void checkArg(String cname, float price, int repertory, String description, int type){
+        if (cname.equals("")){
+            throw new IllegalArgumentException("ERROR:商品名为空!");
+        }
+        else if (description.equals("")){
+            throw new IllegalArgumentException("ERROR:商品描述为空!");
+        }
+        else if (repertory <= 0){
+            throw new IllegalArgumentException("ERROR:商品库存不能小于等于0!");
+        }
+        else if (price < 0){
+            throw new IllegalArgumentException("ERROR:商品价格不能小于0!");
+        }
+        else if (type < 1 || type > 5){
+            throw new IllegalArgumentException("ERROR:商品类型参数错误!");
         }
     }
 
@@ -55,14 +81,10 @@ public class CommodityService {
      */
     public void addCommodity(Commodity commodity){
         // 参数检查
-        if (commodity.getCid().equals("")
-                || commodity.getCname().equals("")
-                || commodity.getRepertory() <=0
-                || commodity.getPrice() < 0
-                || commodity.getType() < 1
-                || commodity.getType() > 5){
-            throw new IllegalArgumentException("商品参数非法，新增失败!");
+        if (commodityRepository.findByCidAndIsDelete(commodity.getCid(), false) != null){
+            throw new IllegalArgumentException("ERROR:商品id存在,无法新增!");
         }
+        checkArg(commodity.getCname(), commodity.getPrice(), commodity.getRepertory(), commodity.getDescription(), commodity.getType());
 
         commodityRepository.save(commodity);
     }
@@ -73,7 +95,7 @@ public class CommodityService {
      */
     public void deleteCommodity(String cid){
         // 检查商品id
-        Commodity commodity = checkArg(cid);
+        Commodity commodity = checkCid(cid);
         commodity.setDelete(true);
         commodityRepository.save(commodity);
     }
@@ -81,11 +103,11 @@ public class CommodityService {
     /**
      * 获取商品的月销量
      * @param cid 商品id
-     * @return
+     * @return 商品销量
      */
     private int getMonthSaleVolume(String cid){
 
-        checkArg(cid);
+        checkCid(cid);
         int salesVolume = 0;
 
         // 查找已经完成的订单
@@ -111,8 +133,8 @@ public class CommodityService {
 
     /**
      * 转换为DTO对象
-     * @param c
-     * @return
+     * @param c 商品对象
+     * @return 商品数据传输对象列表
      */
     private CommodityDTO transferDTO(Commodity c){
 
@@ -132,12 +154,12 @@ public class CommodityService {
 
     /**
      * 获取整个商品列表
-     * @return
+     * @return 商品数据传输对象列表
      */
     private List<CommodityDTO> getAllCommodities(){
         // 获取整个商品列表
         // 未被删除的
-        List<Commodity> commodities = commodityRepository.findByDelete(false);
+        List<Commodity> commodities = commodityRepository.findByIsDelete(false);
         List<CommodityDTO> commodityDTOS = new ArrayList<>();
 
         // 对于每个商品，构造一个DTO对象
@@ -150,7 +172,7 @@ public class CommodityService {
 
     /**
      * 返回系统中销量前十的商品（首页推荐）
-     * @return
+     * @return 商品数据传输对象列表
      */
     public List<CommodityDTO> getRecommendCommodities(){
 
@@ -169,8 +191,8 @@ public class CommodityService {
 
     /**
      * 根据类别返回所有商品
-     * @param type
-     * @return
+     * @param type 商品类型
+     * @return 商品数据传输对象列表
      */
     public List<CommodityDTO> getCommoditiesByType(int type){
 
@@ -180,7 +202,7 @@ public class CommodityService {
 
         // 获取整个商品列表
         // 未被删除的
-        List<Commodity> commodities = commodityRepository.findByTypeAndDelete(type, false);
+        List<Commodity> commodities = commodityRepository.findByTypeAndIsDelete(type, false);
         List<CommodityDTO> commodityDTOS = new ArrayList<>();
 
         // 对于每个商品，构造一个DTO对象
@@ -194,40 +216,24 @@ public class CommodityService {
     /**
      * 商品详情
      * @param cid 商品id
-     * @return
+     * @return 商品数据传输对象
      */
     public CommodityDTO getCommodity(String cid){
 
-        Commodity commodity = checkArg(cid);
+        Commodity commodity = checkCid(cid);
 
         return transferDTO(commodity);
     }
 
     /**
-     * 获取所有的商品信息（管理端）
-     * @return
-     */
-    public List<Commodity> getAllCommoditiesM(){
-        return commodityRepository.findAll();
-    }
-
-    /**
      * 编辑商品（管理端）
-     * @param commodity
+     * @param commodity 商品对象
      */
     public void updateCommodity(Commodity commodity){
 
-//        Commodity old = commodityRepository.findById(commodity.getCid()).orElse(null);
-        checkArg(commodity.getCid());
-
         // 参数检查
-        if (commodity.getCname().equals("")
-                || commodity.getRepertory() <0
-                || commodity.getPrice() < 0
-                || commodity.getType() < 1
-                || commodity.getType() > 5){
-            throw new IllegalArgumentException("商品参数非法，更新失败!");
-        }
+        checkCid(commodity.getCid());
+        checkArg(commodity.getCname(), commodity.getPrice(), commodity.getRepertory(), commodity.getDescription(), commodity.getType());
 
         commodityRepository.save(commodity);
     }

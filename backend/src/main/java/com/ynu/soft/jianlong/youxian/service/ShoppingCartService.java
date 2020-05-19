@@ -183,7 +183,7 @@ public class ShoppingCartService {
 
         checkArgUid(uid);
         // 首先获取默认地址
-        ShippingAddress address = shippingAddressRepository.findByUidAndDefault(uid, true);
+        ShippingAddress address = shippingAddressRepository.findByUidAndIsDefault(uid, true);
         List<ShoppingItemDTO> orderItems = new ArrayList<>();
 
         float totalPrice = 0;
