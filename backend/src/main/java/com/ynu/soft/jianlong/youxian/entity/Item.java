@@ -1,29 +1,22 @@
 package com.ynu.soft.jianlong.youxian.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 
 /**
- * Created on 2020/4/14 0014
- * BY Jianlong
+ * @Description
+ * @Author Jianlong
+ * @Date 2020-05-12 下午 19:15
  */
-@Entity
-@Table(name = "shoppingitem")
-public class ShoppingItem{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Item {
     private int id;
-    @Column(name = "cid")
     private String cid;
-    @Column(name = "uid")
     private String uid;
-    // 数量
-    @Column(name = "number")
     private int number;
 
-    public ShoppingItem() {
+    public Item() {
     }
 
-    public ShoppingItem(String cid, String uid, int number) {
+    public Item(String cid, String uid, int number) {
         this.cid = cid;
         this.uid = uid;
         this.number = number;
@@ -55,14 +48,5 @@ public class ShoppingItem{
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    @Override
-    public String toString() {
-        return "ShoppingItem{" +
-                "cid='" + cid + '\'' +
-                ", uid='" + uid + '\'' +
-                ", number=" + number +
-                '}';
     }
 }

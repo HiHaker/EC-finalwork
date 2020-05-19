@@ -26,23 +26,26 @@ public class ShippingAddress {
     // 收货人地址
     @Column(name = "address")
     private String address;
+    // 是否是默认地址
+    @Column(name = "isDefault")
+    private boolean isDefault;
+    // 地址是否被删除
+    @Column(name = "isDelete")
+    private boolean isDelete;
 
     public ShippingAddress() {
     }
 
-    public ShippingAddress(String uid, String name, String telephone, String address) {
+    public ShippingAddress(String uid, String name, String telephone, String address, boolean isDefault) {
         this.uid = uid;
         this.name = name;
         this.telephone = telephone;
         this.address = address;
+        this.isDefault = isDefault;
     }
 
     public Integer getSid() {
         return sid;
-    }
-
-    public void setSid(Integer sid) {
-        this.sid = sid;
     }
 
     public String getUid() {
@@ -77,6 +80,22 @@ public class ShippingAddress {
         this.address = address;
     }
 
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
+    }
+
     @Override
     public String toString() {
         return "ShippingAddress{" +
@@ -85,6 +104,8 @@ public class ShippingAddress {
                 ", name='" + name + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", address='" + address + '\'' +
+                ", isDefault=" + isDefault +
+                ", isDelete=" + isDelete +
                 '}';
     }
 }

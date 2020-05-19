@@ -1,47 +1,27 @@
 package com.ynu.soft.jianlong.youxian.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import java.util.List;
 
 /**
- * Created on 2020/4/14 0014
- * BY Jianlong
+ * @Description
+ * @Author Jianlong
+ * @Date 2020-05-12 下午 18:58
  */
-@Entity
-@Table(name = "orders")
-public class Order {
-    @Id
+public class OrderDTO {
     private String oid;
-    // 地址的id
-    @Column(name = "sid")
-    private int sid;
     // 总价
-    @Column(name = "totalPrice")
     private float totalPrice;
     // 订单状态
-    @Column(name = "status")
     private int status;
     // 下单时间
-    @Column(name = "orderTime")
     private String orderTime;
     // 发货时间
-    @Column(name = "deliveryTime")
     private String deliveryTime;
-
-    public Order() {
-    }
-
-    public Order(String oid, int sid, float totalPrice, int status,
-                 String orderTime, String deliveryTime) {
-        this.oid = oid;
-        this.sid = sid;
-        this.totalPrice = totalPrice;
-        this.status = status;
-        this.orderTime = orderTime;
-        this.deliveryTime = deliveryTime;
-    }
+    // 收货地址
+    private ShippingAddress address;
+    // 订单项
+    private List<ShoppingItemDTO> orderItems;
 
     public String getOid() {
         return oid;
@@ -49,14 +29,6 @@ public class Order {
 
     public void setOid(String oid) {
         this.oid = oid;
-    }
-
-    public int getSid() {
-        return sid;
-    }
-
-    public void setSid(int sid) {
-        this.sid = sid;
     }
 
     public float getTotalPrice() {
@@ -91,16 +63,32 @@ public class Order {
         this.deliveryTime = deliveryTime;
     }
 
+    public ShippingAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(ShippingAddress address) {
+        this.address = address;
+    }
+
+    public List<ShoppingItemDTO> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<ShoppingItemDTO> orderItems) {
+        this.orderItems = orderItems;
+    }
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "OrderDTO{" +
                 "oid='" + oid + '\'' +
-                ", sid='" + sid + '\'' +
                 ", totalPrice=" + totalPrice +
                 ", status=" + status +
                 ", orderTime='" + orderTime + '\'' +
                 ", deliveryTime='" + deliveryTime + '\'' +
+                ", address=" + address +
+                ", orderItems=" + orderItems +
                 '}';
     }
 }

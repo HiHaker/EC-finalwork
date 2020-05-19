@@ -10,5 +10,7 @@ import java.util.List;
  * BY Jianlong
  */
 public interface CommodityRepository extends JpaRepository<Commodity, String> {
+    List<Commodity> findByDelete(boolean value);
+    List<Commodity> findByTypeAndDelete(int type, boolean value);
     List<Commodity> findByCnameContains(String keyword);
 }

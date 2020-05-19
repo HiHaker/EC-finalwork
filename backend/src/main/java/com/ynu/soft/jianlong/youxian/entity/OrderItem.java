@@ -8,7 +8,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "orderitem")
-public class OrderItem {
+public class OrderItem{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,9 +19,6 @@ public class OrderItem {
     // 数量
     @Column(name = "number")
     private int number;
-    // 总价
-    @Column(name = "itemPrice")
-    private float itemPrice;
 
     public OrderItem() {
     }
@@ -30,7 +27,10 @@ public class OrderItem {
         this.cid = cid;
         this.oid = oid;
         this.number = number;
-        this.itemPrice = itemPrice;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getCid() {
@@ -57,21 +57,12 @@ public class OrderItem {
         this.number = number;
     }
 
-    public float getItemPrice() {
-        return itemPrice;
-    }
-
-    public void setItemPrice(float itemPrice) {
-        this.itemPrice = itemPrice;
-    }
-
     @Override
     public String toString() {
         return "OrderItem{" +
                 "cid='" + cid + '\'' +
                 ", oid='" + oid + '\'' +
                 ", number=" + number +
-                ", itemPrice=" + itemPrice +
                 '}';
     }
 }

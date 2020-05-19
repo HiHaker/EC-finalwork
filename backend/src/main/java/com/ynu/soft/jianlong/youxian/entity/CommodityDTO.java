@@ -1,49 +1,51 @@
 package com.ynu.soft.jianlong.youxian.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.List;
 
 /**
- * Created on 2020/4/14 0014
- * BY Jianlong
+ * @Description
+ * @Author Jianlong
+ * @Date 2020-05-04 下午 15:08
  */
-@Entity
-@Table(name = "Commodity")
-public class Commodity {
-    @Id
+public class CommodityDTO{
+    // 图片地址
+    private List<String> imgId;
+    // 商品id
     private String cid;
-    // 商品名
-    @Column(name = "cname")
+    // 商品名字
     private String cname;
     // 商品价格
-    @Column(name = "price")
     private float price;
-    // 商品库存
-    @Column(name = "repertory")
+    // 商品的库存
     private int repertory;
     // 商品描述
-    @Column(name = "description")
     private String description;
+    // 商品的销量（本月）
+    private int saleVolume;
     // 商品类型
-    @Column(name = "type")
     private int type;
-    // 是否被下架
-    @Column(name = "isDelete")
-    private boolean isDelete;
 
-    public Commodity() {
+    public CommodityDTO() {
     }
 
-    public Commodity(String cid, String cname, float price, int repertory, String description, int type, boolean isDelete) {
+    public CommodityDTO(List<String> imgId, String cid, String cname,
+                        float price, int repertory, String description, int saleVolume, int type) {
+        this.imgId = imgId;
         this.cid = cid;
         this.cname = cname;
         this.price = price;
         this.repertory = repertory;
         this.description = description;
+        this.saleVolume = saleVolume;
         this.type = type;
-        this.isDelete = isDelete;
+    }
+
+    public List<String> getImgId() {
+        return imgId;
+    }
+
+    public void setImgId(List<String> imgId) {
+        this.imgId = imgId;
     }
 
     public String getCid() {
@@ -86,6 +88,14 @@ public class Commodity {
         this.description = description;
     }
 
+    public int getSaleVolume() {
+        return saleVolume;
+    }
+
+    public void setSaleVolume(int saleVolume) {
+        this.saleVolume = saleVolume;
+    }
+
     public int getType() {
         return type;
     }
@@ -94,24 +104,17 @@ public class Commodity {
         this.type = type;
     }
 
-    public boolean isDelete() {
-        return isDelete;
-    }
-
-    public void setDelete(boolean delete) {
-        isDelete = delete;
-    }
-
     @Override
     public String toString() {
-        return "Commodity{" +
-                "cid='" + cid + '\'' +
+        return "CommodityDTO{" +
+                "imgId=" + imgId +
+                ", cid='" + cid + '\'' +
                 ", cname='" + cname + '\'' +
                 ", price=" + price +
                 ", repertory=" + repertory +
                 ", description='" + description + '\'' +
+                ", saleVolume=" + saleVolume +
                 ", type=" + type +
-                ", isDelete=" + isDelete +
                 '}';
     }
 }
