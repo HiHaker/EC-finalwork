@@ -67,7 +67,7 @@ public class CommodityService {
         else if (repertory <= 0){
             throw new IllegalArgumentException("ERROR:商品库存不能小于等于0!");
         }
-        else if (price < 0){
+        else if (price <= 0){
             throw new IllegalArgumentException("ERROR:商品价格不能小于0!");
         }
         else if (type < 1 || type > 5){
@@ -77,16 +77,38 @@ public class CommodityService {
 
     /**
      * 上架新商品
-     * @param commodity 商品对象
+     * @param commodityJson 商品对象
      */
-    public void addCommodity(Commodity commodity){
+    public void addCommodity(CommodityJson commodityJson){
+
         // 参数检查
+        if (commodityJson == null){
+            throw new IllegalArgumentException("ERROR:传入对象为空!");
+        }
+
+        Commodity commodity = commodityJson.getCommodity();
+
+        if (commodity == null){
+            throw new IllegalArgumentException("ERROR:传入对象里的商品对象为空!");
+        }
+
         if (commodityRepository.findByCidAndIsDelete(commodity.getCid(), false) != null){
             throw new IllegalArgumentException("ERROR:商品id存在,无法新增!");
         }
         checkArg(commodity.getCname(), commodity.getPrice(), commodity.getRepertory(), commodity.getDescription(), commodity.getType());
 
+        // 先存储商品
         commodityRepository.save(commodity);
+
+        List<String> imgList = commodityJson.getImgList();
+        if (imgList == null){
+            throw new IllegalArgumentException("ERROR:传入对象里的图片对象为空!");
+        }
+
+        // 再存储图片
+        for (String img : imgList){
+            commoImageRepository.save(new CommoImage(img, commodity.getCid()));
+        }
     }
 
     /**
@@ -209,6 +231,9 @@ public class CommodityService {
         for (Commodity c : commodities){
             commodityDTOS.add(transferDTO(c));
         }
+
+        // 根据月销量进行一个排序
+        commodityDTOS.sort(Comparator.comparingInt(CommodityDTO::getSaleVolume));
 
         return commodityDTOS;
     }

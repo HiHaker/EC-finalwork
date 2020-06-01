@@ -306,18 +306,31 @@ public class ShoppingCartService {
 
     }
 
+
     /**
      * 根据状态参数找到订单
-     * @param status
+     * @param status 状态参数
      * @return
      */
-    public List<OrderDTO> getOrderByStatus(int status){
+    public List<OrderDTO> getOrderByUidAndStatus(String uid, int status){
+
+        checkArgUid(uid);
 
         if (status < 1 || status > 4){
             throw new IllegalArgumentException("状态参数错误!");
         }
 
-        List<Order> orders = orderRepository.findByStatus(status);
+        List<ShippingAddress> addresses = shippingAddressRepository.findByUidAndIsDelete(uid, false);
+        List<Integer> sidList = new ArrayList<>();
+        for (ShippingAddress address : addresses){
+            sidList.add(address.getSid());
+        }
+
+        List<Order> orders = new ArrayList<>();
+        for (int sid : sidList){
+            orders.addAll(orderRepository.findBySidAndStatus(sid, status));
+        }
+
         List<OrderDTO> orderDTOS = new ArrayList<>();
 
         for (Order order : orders){
