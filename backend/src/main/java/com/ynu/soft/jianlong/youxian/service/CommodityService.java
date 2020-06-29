@@ -7,6 +7,7 @@ import com.ynu.soft.jianlong.youxian.repository.OrderItemRepository;
 import com.ynu.soft.jianlong.youxian.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -252,13 +253,32 @@ public class CommodityService {
 
     /**
      * 编辑商品（管理端）
-     * @param commodity 商品对象
+     * @param commodityJson 商品数据传输对象
      */
-    public void updateCommodity(Commodity commodity){
+    @Transactional
+    public void updateCommodity(CommodityJson commodityJson){
 
         // 参数检查
-        checkCid(commodity.getCid());
+        Commodity commodity = commodityJson.getCommodity();
+        if (commodity == null){
+            throw new IllegalArgumentException("ERROR:商品对象为空!");
+        }
+
+        String cid = commodity.getCid();
+        checkCid(cid);
         checkArg(commodity.getCname(), commodity.getPrice(), commodity.getRepertory(), commodity.getDescription(), commodity.getType());
+
+        List<String> imgList = commodityJson.getImgList();
+        if (imgList == null || imgList.size() == 0){
+            throw new IllegalArgumentException("ERROR:图片参数错误!");
+        }
+
+        // 先删除图片，再进行更新
+        commoImageRepository.deleteByCid(cid);
+
+        for (String img : imgList){
+            commoImageRepository.save(new CommoImage(img, cid));
+        }
 
         commodityRepository.save(commodity);
     }

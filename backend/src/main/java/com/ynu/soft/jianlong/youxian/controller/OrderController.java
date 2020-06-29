@@ -1,10 +1,8 @@
 package com.ynu.soft.jianlong.youxian.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ynu.soft.jianlong.youxian.entity.Order;
-import com.ynu.soft.jianlong.youxian.entity.OrderJson1;
-import com.ynu.soft.jianlong.youxian.entity.OrderJson2;
-import com.ynu.soft.jianlong.youxian.entity.StatusJson;
+import com.ynu.soft.jianlong.youxian.entity.*;
+import com.ynu.soft.jianlong.youxian.service.OrderMsgService;
 import com.ynu.soft.jianlong.youxian.service.ShoppingCartService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +23,8 @@ public class OrderController {
 
     @Autowired
     ShoppingCartService shoppingCartService;
+    @Autowired
+    OrderMsgService orderMsgService;
 
     JSONObject jsonObject;
 
@@ -34,9 +34,9 @@ public class OrderController {
      * @return
      */
     @ApiOperation(value = "在点击下单时候使用，生成订单（不存入数据库）", notes = "在点击下单时候使用，生成订单（不存入数据库）")
-    @ApiImplicitParam(name = "orderJson1", value = "参数对象", required = true, dataType = "OrderJson1")
-    @GetMapping("/getOrderBody")
-    public JSONObject getOrderBody(@RequestParam OrderJson1 json){
+    @ApiImplicitParam(name = "json", value = "参数对象", required = true, dataType = "OrderJson1")
+    @PostMapping("/getOrderBody")
+    public JSONObject getOrderBody(@RequestBody OrderJson1 json){
 
         jsonObject = new JSONObject();
 
@@ -63,9 +63,9 @@ public class OrderController {
      * @return 状态信息
      */
     @ApiOperation(value = "在点击确认订单时候使用，生成订单（存入数据库）", notes = "在点击确认订单时候使用，生成订单（存入数据库）")
-    @ApiImplicitParam(name = "orderJson2", value = "参数对象", required = true, dataType = "OrderJson2")
+    @ApiImplicitParam(name = "json", value = "参数对象", required = true, dataType = "OrderJson2")
     @PostMapping("/generateOrder")
-    public JSONObject generateOrder(@RequestParam OrderJson2 json){
+    public JSONObject generateOrder(@RequestBody OrderJson2 json){
 
         jsonObject = new JSONObject();
 
@@ -73,6 +73,107 @@ public class OrderController {
             Order order = json.getOrder();
             List<Integer> itemList = json.getItemList();
             shoppingCartService.generateOrder(order, itemList);
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    @ApiOperation(value = "更新订单状态", notes = "更新订单状态")
+    @PutMapping("/updateOrderStatus")
+    public JSONObject updateOrderStatus(@RequestParam String oid, @RequestParam int status){
+        jsonObject = new JSONObject();
+
+        try{
+            shoppingCartService.updateOrderStatus(oid, status);
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    @ApiOperation(value = "获得未删除的订单消息", notes = "获得未删除的订单消息")
+    @GetMapping("/getNotDeleteOrderMsg")
+    public JSONObject getNotDeleteOrderMsg(@RequestParam String uid){
+        jsonObject = new JSONObject();
+
+        try{
+            jsonObject.put("content", orderMsgService.getNotDeleteOrderMsg(uid));
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    @ApiOperation(value = "更新订单消息", notes = "更新订单消息")
+    @ApiImplicitParam(name = "orderMsg", value = "参数对象", required = true, dataType = "OrderMsg")
+    @PutMapping("/updateOrderMsg")
+    public JSONObject updateOrderMsg(@RequestBody OrderMsg orderMsg){
+        jsonObject = new JSONObject();
+
+        try{
+            orderMsgService.updateOrderMsg(orderMsg);
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    @ApiOperation(value = "订单发货", notes = "订单发货")
+    @PutMapping("/deliveryCommodity")
+    public JSONObject deliveryCommodity(@RequestParam String oid, @RequestParam String deliveryTime){
+        jsonObject = new JSONObject();
+
+        try{
+            shoppingCartService.deliveryCommodity(oid, deliveryTime);
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    @ApiOperation(value = "获得未删除的订单消息", notes = "获得未删除的订单消息")
+    @GetMapping("/getNotReadOrderMsg")
+    public JSONObject getNotReadOrderMsg(@RequestParam String uid){
+        jsonObject = new JSONObject();
+
+        try{
+            jsonObject.put("content", orderMsgService.getNotReadOrderMsg(uid));
             jsonObject.put("isSuccess", true);
             jsonObject.put("message", null);
         }
@@ -100,6 +201,32 @@ public class OrderController {
 
         try{
             jsonObject.put("content", shoppingCartService.getOrderByUidAndStatus(uid, status));
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    /**
+     * 根据状态获取订单列表（管理端）
+     * @param status 状态参数
+     * @return 状态信息
+     */
+    @ApiOperation(value = "根据状态获取订单列表（管理端）", notes = "根据状态获取订单列表（管理端）")
+    @GetMapping("/getOrderByStatusM")
+    public JSONObject getOrderByStatusM(@RequestParam int status){
+
+        jsonObject = new JSONObject();
+
+        try{
+            jsonObject.put("content", shoppingCartService.getOrdersByStatusM(status));
             jsonObject.put("isSuccess", true);
             jsonObject.put("message", null);
         }
@@ -144,8 +271,8 @@ public class OrderController {
      * @param uid 用户id
      * @return 状态信息
      */
-    @ApiOperation(value = "获取订单详情", notes = "获取订单详情")
-    @GetMapping("/getOrder")
+    @ApiOperation(value = "获取全部类别的订单数量", notes = "获取全部类别的订单数量")
+    @GetMapping("/getAllTypeNumberOfOrder")
     public JSONObject getAllTypeNumberOfOrder(@RequestParam String uid){
 
         jsonObject = new JSONObject();

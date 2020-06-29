@@ -94,7 +94,7 @@ public class MallController {
      * @return 状态信息
      */
     @ApiOperation(value = "上架新商品", notes = "上架新商品")
-    @ApiImplicitParam(name = "commodity", value = "商品对象", required = true, dataType = "Commodity")
+    @ApiImplicitParam(name = "commodityJson", value = "商品对象", required = true, dataType = "CommodityJson")
     @PostMapping("/addCommodity")
     public JSONObject addCommodity(@RequestBody CommodityJson commodityJson){
 
@@ -102,6 +102,32 @@ public class MallController {
 
         try{
             commodityService.addCommodity(commodityJson);
+            jsonObject.put("isSuccess", true);
+            jsonObject.put("message", null);
+        }
+        catch (IllegalArgumentException e){
+            String message = e.getMessage();
+            System.out.println(message);
+            jsonObject.put("isSuccess", false);
+            jsonObject.put("message", message);
+        }
+
+        return jsonObject;
+    }
+
+    /**
+     * 更新商品
+     * @param commodityJson 商品数据传输对象
+     * @return
+     */
+    @ApiOperation(value = "维护商品", notes = "维护商品")
+    @ApiImplicitParam(name = "commodityJson", value = "商品对象", required = true, dataType = "CommodityJson")
+    @PostMapping("/updateCommodity")
+    public JSONObject updateCommodity(@RequestBody CommodityJson commodityJson){
+        jsonObject = new JSONObject();
+
+        try{
+            commodityService.updateCommodity(commodityJson);
             jsonObject.put("isSuccess", true);
             jsonObject.put("message", null);
         }

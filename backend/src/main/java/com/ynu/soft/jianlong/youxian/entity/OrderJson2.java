@@ -27,4 +27,12 @@ public class OrderJson2 {
     public void setItemList(List<Integer> itemList) {
         this.itemList = itemList;
     }
+
+    @Override
+    public String toString() {
+        return "OrderJson2{" +
+                "order=" + order +
+                ", itemList=" + itemList +
+                '}';
+    }
 }

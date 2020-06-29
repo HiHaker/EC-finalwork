@@ -1,15 +1,11 @@
 package com.ynu.soft.jianlong.youxian;
 
-import com.ynu.soft.jianlong.youxian.entity.Commodity;
-import com.ynu.soft.jianlong.youxian.repository.CommodityRepository;
 import com.ynu.soft.jianlong.youxian.service.CommonService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class YouxianApplicationTests {
 
     @Autowired

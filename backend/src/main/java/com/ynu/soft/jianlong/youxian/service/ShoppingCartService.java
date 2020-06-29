@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,12 +43,36 @@ public class ShoppingCartService {
     CommonService commonService;
 
     /**
+     * 检查itemId
+     * @param itemId 购物项id
+     */
+    private void checkArgItemId(int itemId){
+        if (shoppingItemRepository.findById(itemId).orElse(null) == null){
+            throw new IllegalArgumentException("ERROR:参数非法!itemId不存在!");
+        }
+    }
+
+    /**
+     * 检查oid参数
+     * @param oid 订单id
+     */
+    private Order checkArgOid(String oid){
+        Order order = orderRepository.findById(oid).orElse(null);
+        if (order == null){
+            throw new IllegalArgumentException("ERROR:参数非法!oid不存在!");
+        }
+        else{
+            return order;
+        }
+    }
+
+    /**
      * 检查uid
      * @param uid 用户id
      */
     private void checkArgUid(String uid){
         if (userRepository.findById(uid).orElse(null) == null){
-            throw new IllegalArgumentException("参数非法!uid不存在!");
+            throw new IllegalArgumentException("ERROR:参数非法!uid不存在!");
         }
     }
 
@@ -57,7 +82,7 @@ public class ShoppingCartService {
      */
     private void checkArgCid(String cid){
         if (commodityRepository.findById(cid).orElse(null) == null){
-            throw new IllegalArgumentException("参数非法!cid不存在!");
+            throw new IllegalArgumentException("ERROR:参数非法!cid不存在!");
         }
     }
 
@@ -67,7 +92,17 @@ public class ShoppingCartService {
      */
     private void checkArgNumber(int number){
         if (number < 1){
-            throw new IllegalArgumentException("参数非法!购买的商品的数量不能小于1!");
+            throw new IllegalArgumentException("ERROR:参数非法!购买的商品的数量不能小于1!");
+        }
+    }
+
+    /**
+     * 检查状态码参数
+     * @param status 状态码
+     */
+    private void checkArgStatus(int status){
+        if (status < 1 || status > 4){
+            throw new IllegalArgumentException("ERROR:参数非法!status错误!");
         }
     }
 
@@ -93,9 +128,11 @@ public class ShoppingCartService {
         ShoppingItemDTO itemDTO = new ShoppingItemDTO();
 
         itemDTO.setItemId(itemId);
+        itemDTO.setCid(cid);
         itemDTO.setNumber(number);
         itemDTO.setItemPrice(Objects.requireNonNull(commodityRepository.findById(cid).orElse(null)).getPrice());
         itemDTO.setType(Objects.requireNonNull(commodityRepository.findById(cid).orElse(null)).getType());
+        itemDTO.setCname(Objects.requireNonNull(commodityRepository.findById(cid).orElse(null)).getCname());
         itemDTO.setImgId(commonService.getImgList(cid));
         return itemDTO;
     }
@@ -142,6 +179,7 @@ public class ShoppingCartService {
         } else{
             // 数量加number
             item.setNumber(item.getNumber()+number);
+            shoppingItemRepository.save(item);
         }
     }
 
@@ -168,6 +206,7 @@ public class ShoppingCartService {
      * @param itemId 购物项id
      */
     public void deleteItem(int itemId){
+        checkArgItemId(itemId);
         shoppingItemRepository.deleteById(itemId);
     }
 
@@ -290,9 +329,22 @@ public class ShoppingCartService {
     }
 
     /**
+     * 更新订单的状态
+     * @param oid 订单id
+     * @param status 订单状态
+     */
+    public void updateOrderStatus(String oid, int status){
+        Order order = checkArgOid(oid);
+        checkArgStatus(status);
+
+        order.setStatus(status);
+        orderRepository.save(order);
+    }
+
+    /**
      * 查看订单详情
-     * @param oid
-     * @return
+     * @param oid 订单id
+     * @return 订单数据传输对象
      */
     public OrderDTO getOrder(String oid){
 
@@ -310,7 +362,7 @@ public class ShoppingCartService {
     /**
      * 根据状态参数找到订单
      * @param status 状态参数
-     * @return
+     * @return 订单数据传输对象列表
      */
     public List<OrderDTO> getOrderByUidAndStatus(String uid, int status){
 
@@ -340,5 +392,55 @@ public class ShoppingCartService {
         return orderDTOS;
     }
 
+    /**
+     * 根据状态码获取所有订单（管理端）
+     * @return 订单数据传输对象
+     */
+    public List<OrderDTO> getOrdersByStatusM(int status){
+
+        List<Order> orders = new ArrayList<>(orderRepository.findByStatus(status));
+
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+
+        for (Order order : orders){
+            orderDTOS.add(transferDTO(order));
+        }
+
+        orderDTOS.sort(Comparator.comparing(OrderDTO::getOrderTime));
+
+        return orderDTOS;
+    }
+
+    /**
+     * 获取所有订单（管理端）
+     * @return 订单数据传输对象
+     */
+    public List<OrderDTO> getAllOrdersM(){
+
+        List<Order> orders = new ArrayList<>(orderRepository.findAll());
+
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+
+        for (Order order : orders){
+            orderDTOS.add(transferDTO(order));
+        }
+
+        orderDTOS.sort(Comparator.comparing(OrderDTO::getOrderTime));
+
+        return orderDTOS;
+    }
+
+    /**
+     * 发货
+     * @param oid 订单id
+     * @param deliveryTime 发货时间
+     */
+    public void deliveryCommodity(String oid, String deliveryTime){
+        Order order = checkArgOid(oid);
+        commonService.timeFormatIsCorrect(deliveryTime);
+        order.setDeliveryTime(deliveryTime);
+        order.setStatus(3);
+        orderRepository.save(order);
+    }
 
 }

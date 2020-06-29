@@ -12,5 +12,6 @@ import java.util.List;
  */
 @Repository
 public interface CommoImageRepository extends JpaRepository<CommoImage, String> {
+    void deleteByCid(String cid);
     List<CommoImage> findByCid(String cid);
 }

@@ -10,14 +10,20 @@ import java.util.List;
 public class ShoppingItemDTO {
 
     private int itemId;
+    // 商品id
+    private String cid;
     // 商品图片地址
     private List<String> imgId;
+    // 商品名称
+    private String cname;
     // 商品类型
     private int type;
     // 当前项单价
     private float itemPrice;
     // 商品数量
     private int number;
+    // 是否被选中
+    private boolean checked;
 
     public ShoppingItemDTO() {
     }
@@ -30,12 +36,36 @@ public class ShoppingItemDTO {
         this.itemId = itemId;
     }
 
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
     public List<String> getImgId() {
         return imgId;
     }
 
     public void setImgId(List<String> imgId) {
         this.imgId = imgId;
+    }
+
+    public String getCname() {
+        return cname;
+    }
+
+    public void setCname(String cname) {
+        this.cname = cname;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     public int getType() {
@@ -66,10 +96,13 @@ public class ShoppingItemDTO {
     public String toString() {
         return "ShoppingItemDTO{" +
                 "itemId=" + itemId +
-                ", imgId='" + imgId + '\'' +
+                ", cid='" + cid + '\'' +
+                ", imgId=" + imgId +
+                ", cname='" + cname + '\'' +
                 ", type=" + type +
                 ", itemPrice=" + itemPrice +
                 ", number=" + number +
+                ", checked=" + checked +
                 '}';
     }
 }

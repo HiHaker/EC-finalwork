@@ -19,10 +19,6 @@ public class UserService {
     @Autowired
     private CommonService commonService;
 
-    private void addUser(User user){
-
-    }
-
 //    /**
 //     * 用户是否注册过
 //     * @param userId

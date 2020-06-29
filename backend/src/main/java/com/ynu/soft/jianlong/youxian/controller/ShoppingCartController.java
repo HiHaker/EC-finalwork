@@ -137,7 +137,7 @@ public class ShoppingCartController {
      * @return 状态信息
      */
     @ApiOperation(value = "更新购物项的数量", notes = "更新购物项的数量")
-    @DeleteMapping("/updateShoppingItem")
+    @PutMapping("/updateShoppingItem")
     public JSONObject updateShoppingItem(@RequestParam int itemId, @RequestParam int number){
         jsonObject = new JSONObject();
 
